@@ -7,6 +7,7 @@ export default function Hero() {
   return (
     <Box
       component="section"
+      id="hero"
       sx={{
         backgroundColor: "#0F172A",
         minHeight: "100vh",
@@ -14,6 +15,7 @@ export default function Hero() {
         alignItems: "center",
         justifyContent: "center",
         py: { xs: 8, md: 12 },
+        pt: { xs: "80px", md: "96px" }, // Add top padding for fixed navbar
       }}
     >
       <Container maxWidth="md">
@@ -71,6 +73,11 @@ export default function Hero() {
             <Button
               variant="contained"
               size="large"
+              onClick={() => {
+                document
+                  .getElementById("contact")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
               sx={{
                 px: { xs: 4, md: 6 },
                 py: { xs: 1.5, md: 2 },

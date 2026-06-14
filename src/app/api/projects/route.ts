@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { cookies } from "next/headers";
 
 export async function GET() {
   try {
@@ -20,6 +21,17 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check admin session
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get("admin_session");
+
+    if (!adminSession || adminSession.value !== "true") {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { title, category, description, imageUrl } = body;
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { cookies } from "next/headers";
 
 export async function DELETE(
   request: NextRequest,
@@ -7,6 +8,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get("admin_session");
+
+    if (!adminSession || adminSession.value !== "true") {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
     if (!id || typeof id !== "string" || id.trim() === "") {
       return NextResponse.json(
