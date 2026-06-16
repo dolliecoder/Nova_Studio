@@ -45,7 +45,6 @@ interface Project {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
 
   // Data states
@@ -100,7 +99,7 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    setMounted(true);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchContacts();
     fetchProjects();
   }, []);
@@ -108,14 +107,6 @@ export default function AdminDashboard() {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
-
-  if (!mounted) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#0F172A" }}>
-        <CircularProgress sx={{ color: "#3B82F6" }} />
-      </Box>
-    );
-  }
 
   // Validation for adding new project
   const validateForm = () => {
@@ -208,9 +199,13 @@ export default function AdminDashboard() {
     }
   };
 
-  // Log out handler (clear admin session cookie)
-  const handleLogout = () => {
-    document.cookie = "admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+  // Log out handler (clear admin session cookie server-side)
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+    } catch (error) {
+      console.error("Logout request failed:", error);
+    }
     router.push("/admin/login");
   };
 

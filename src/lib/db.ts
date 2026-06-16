@@ -17,7 +17,7 @@ if (typeof window === 'undefined') {
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 } else {
-  prismaInstance = null as any;
+  prismaInstance = null as unknown as PrismaClient;
 }
 
 export const prisma = globalForPrisma.prisma || prismaInstance;
